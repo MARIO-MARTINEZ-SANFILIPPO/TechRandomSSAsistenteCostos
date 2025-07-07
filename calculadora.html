@@ -6,50 +6,22 @@
     <title>Calculadora de Costos del Proyecto - Asistente de Voz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript">document.oncontextmenu = function(){return false;}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f7f9;
-        }
-        h1, h2, h3, button, .font-display {
-            font-family: 'Poppins', sans-serif;
-        }
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease-in-out;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #2563eb;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        .slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #2563eb;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-            max-width: 400px;
-            margin: auto;
-        }
+        body { font-family: 'Roboto', sans-serif; background-color: #f4f7f9; }
+        h1, h2, h3, h4, button, .font-display { font-family: 'Poppins', sans-serif; }
+        .card { background-color: white; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05); transition: all 0.3s ease-in-out; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #2563eb; cursor: pointer; border-radius: 50%; }
+        .slider::-moz-range-thumb { width: 20px; height: 20px; background: #2563eb; cursor: pointer; border-radius: 50%; }
+        .chart-container { position: relative; height: 280px; width: 100%; max-width: 350px; margin: auto; }
+        .radio-label { transition: all 0.2s ease-in-out; border: 2px solid #e5e7eb; }
+        .radio-label:hover { border-color: #93c5fd; }
+        input[type="radio"]:checked + .radio-label { border-color: #2563eb; background-color: #eff6ff; box-shadow: 0 0 0 2px #2563eb40; }
+        #strategy-details ul { list-style-position: inside; }
     </style>
 </head>
 <body class="text-gray-700" oncontextmenu="return false;">
@@ -63,87 +35,116 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Panel de Controles -->
-            <div class="lg:col-span-2">
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Escenarios y Parámetros -->
                 <div class="card p-6">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">Parámetros de Estimación</h2>
-
-                    <!-- Controles de Escenarios -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold mb-3">Seleccionar Escenario</h3>
-                        <div class="flex flex-wrap gap-3">
-                            <button id="btn-optimista" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Optimista</button>
-                            <button id="btn-base" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Más Probable (Base)</button>
-                            <button id="btn-pesimista" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Pesimista</button>
-                        </div>
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">1. Estimación de Escenarios de Desarrollo</h2>
+                     <div class="flex flex-wrap gap-3">
+                        <button id="btn-optimista" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Optimista</button>
+                        <button id="btn-base" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Más Probable (Base)</button>
+                        <button id="btn-pesimista" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Pesimista</button>
                     </div>
+                </div>
 
-                    <!-- Controles de Recursos Humanos -->
+                <div class="card p-6">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">2. Parámetros de Costos Mensuales (Operación)</h2>
+                    
                     <div>
-                        <h3 class="text-lg font-semibold mb-4">1. Recursos Humanos</h3>
-                        <div class="space-y-6">
-                            <div>
-                                <label for="integrantes" class="block font-medium mb-1">Número de Integrantes: <span id="integrantes-val" class="font-bold text-blue-600">4</span></label>
-                                <input type="range" id="integrantes" min="1" max="10" value="4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
-                            </div>
-                            <div>
-                                <label for="horas" class="block font-medium mb-1">Horas por Integrante (Promedio): <span id="horas-val" class="font-bold text-blue-600">200</span></label>
-                                <input type="range" id="horas" min="100" max="300" step="10" value="200" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
-                            </div>
-                             <div>
-                                <label for="costo-hora" class="block font-medium mb-1">Costo por Hora (USD): <span id="costo-hora-val" class="font-bold text-blue-600">30</span></label>
-                                <input type="range" id="costo-hora" min="10" max="50" value="30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
-                            </div>
+                        <h3 class="text-lg font-semibold mb-4">Estrategia de Despliegue</h3>
+                        <div id="deployment-strategy" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><input type="radio" name="strategy" id="google-cloud" value="google-cloud" class="hidden" checked><label for="google-cloud" class="radio-label block p-4 rounded-lg border-2 cursor-pointer"><span class="font-bold block">Google Cloud (Serverless)</span><span class="text-sm text-gray-500">PaaS gestionado, pago por uso.</span></label></div>
+                            <div><input type="radio" name="strategy" id="netuy1-whisper" value="netuy1-whisper" class="hidden"><label for="netuy1-whisper" class="radio-label block p-4 rounded-lg border-2 cursor-pointer"><span class="font-bold block">Netuy Plan 1 + Whisper (openai)</span><span class="text-sm text-gray-500">IaaS Local + STT Autoalojado.</span></label></div>
+                            <div><input type="radio" name="strategy" id="netuy2-whisper" value="netuy2-whisper" class="hidden"><label for="netuy2-whisper" class="radio-label block p-4 rounded-lg border-2 cursor-pointer"><span class="font-bold block">Netuy Plan 2 + Whisper (openai)</span><span class="text-sm text-gray-500">Más RAM/Storage + STT Autoalojado.</span></label></div>
+                            <div><input type="radio" name="strategy" id="hybrid" value="hybrid" class="hidden"><label for="hybrid" class="radio-label block p-4 rounded-lg border-2 cursor-pointer"><span class="font-bold block">Híbrido (Netuy 1 + Google API)</span><span class="text-sm text-gray-500">Infraestructura local, APIs de voz en la nube.</span></label></div>
                         </div>
                     </div>
+                    
+                    <div class="mt-8 pt-6 border-t">
+                        <h3 class="text-lg font-semibold mb-4">Uso Estimado</h3>
+                        <div>
+                           <label for="usuarios" class="block font-medium mb-1">Usuarios Activos Mensuales: <span id="usuarios-val" class="font-bold text-blue-600">2000</span></label>
+                           <input type="range" id="usuarios" min="0" max="5000" step="100" value="2000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                       </div>
+                    </div>
 
-                    <!-- Controles de Otros Costos -->
-                     <div class="mt-8 pt-6 border-t">
-                        <h3 class="text-lg font-semibold mb-4">2. Otros Costos</h3>
-                        <div class="space-y-6">
-                           <div>
-                                <label for="servicios" class="block font-medium mb-1">Servicios Cloud (USD): <span id="servicios-val" class="font-bold text-blue-600">100</span></label>
-                                <input type="range" id="servicios" min="0" max="500" step="10" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                    <div id="strategy-details-container" class="mt-8 pt-6 border-t">
+                        <h3 class="text-lg font-semibold mb-4">Análisis de la Estrategia Seleccionada</h3>
+                        <div id="strategy-details" class="bg-gray-50 p-4 rounded-lg text-gray-800"></div>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">3. Otros Costos y Activos del Proyecto</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Costos Indirectos (Home Office)</h3>
+                            <p class="text-sm text-gray-600 mb-4">Estos costos (electricidad, internet, etc.) son necesarios para el desarrollo pero son absorbidos por el equipo, no se trasladan al presupuesto formal del proyecto.</p>
+                            <div>
+                               <label for="indirectos" class="block font-medium mb-1">Costo Indirecto Mensual por Integrante (USD): <span id="indirectos-val" class="font-bold text-blue-600">25</span></label>
+                               <input type="range" id="indirectos" min="0" max="100" step="5" value="25" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                           </div>
+                        </div>
+                         <div>
+                            <h3 class="text-lg font-semibold mb-4">Costos de Licenciamiento de Software</h3>
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                <p class="font-bold text-green-800">Costo de Licenciamiento: $0</p>
+                                <p class="text-sm text-green-700 mt-1">El proyecto se desarrolla utilizando exclusivamente herramientas de código abierto o con licencias gratuitas, tales como Android Studio, Rasa Open Source, Docker, Git, Prometheus, Grafana (OSS), y frameworks como Angular/React/Vue. Esto representa un ahorro significativo y una ventaja estratégica.</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            <!-- Panel de Resultados -->
             <div class="lg:col-span-1">
                  <div class="card p-6 sticky top-8">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">Resultados de la Estimación</h2>
-
-                    <div class="space-y-5">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Total de Horas-Equipo:</span>
-                            <span id="total-horas" class="font-bold text-2xl text-gray-800">800</span>
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">Estimación de Costos</h2>
+                     <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Costos de Inversión (Desarrollo)</h3>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                             <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Horas-Equipo: <span id="total-horas" class="font-bold">800</span></span>
+                                <span id="costo-rrhh" class="font-bold text-xl text-gray-800">$24,000</span>
+                            </div>
                         </div>
-                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Costo RR.HH.:</span>
-                            <span id="costo-rrhh" class="font-bold text-2xl text-gray-800">$24,000</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Otros Costos:</span>
-                            <span id="otros-costos" class="font-bold text-2xl text-gray-800">$100</span>
-                        </div>
-                        <div class="bg-gray-100 p-4 rounded-lg mt-4">
+                    </div>
+                     <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Costos Operativos Mensuales (Directos)</h3>
+                        <div class="space-y-4">
                             <div class="flex justify-between items-center">
-                                <span class="font-semibold text-lg text-gray-800">Costo Total Estimado:</span>
-                                <span id="costo-total" class="font-bold text-3xl text-blue-600">$24,100</span>
+                                <span class="text-gray-600">Infraestructura / Hosting:</span>
+                                <span id="costo-infra" class="font-bold text-xl text-gray-800">$41.00</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">APIs de Voz (STT/TTS):</span>
+                                <span id="costo-apis" class="font-bold text-xl text-gray-800">$694.08</span>
+                            </div>
+                             <div class="bg-blue-100 p-4 rounded-lg mt-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-gray-800">Costo Mensual Directo:</span>
+                                    <span id="costo-mensual-total" class="font-bold text-2xl text-blue-600">$735.08</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Costos Operativos Mensuales (Indirectos)</h3>
+                         <div class="bg-gray-50 p-3 rounded-lg">
+                             <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Home Office (Equipo):</span>
+                                <span id="costo-indirecto" class="font-bold text-xl text-gray-800">$100.00</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-8 border-t pt-6">
-                        <h3 class="text-lg font-semibold text-center mb-4">Distribución de Costos</h3>
+                        <h3 class="text-lg font-semibold text-center mb-4">Distribución de Costos Operativos</h3>
                         <div class="chart-container">
                             <canvas id="costChart"></canvas>
                         </div>
                     </div>
                     
-                    <footer class="text-center mt-8 pt-4 border-t border-gray-200">
+                    <footer class="text-center mt-6 pt-4 border-t border-gray-200">
                         <p class="text-sm text-gray-500">© 2025 - Desarrollado por TechRandomSolutionStudio</p>
                     </footer>
                  </div>
@@ -153,38 +154,49 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Deshabilitar menú contextual del clic derecho
             document.addEventListener('contextmenu', event => event.preventDefault());
 
-            // Elementos del DOM
-            const integrantesSlider = document.getElementById('integrantes');
-            const horasSlider = document.getElementById('horas');
-            const costoHoraSlider = document.getElementById('costo-hora');
-            const serviciosSlider = document.getElementById('servicios');
-
-            const integrantesVal = document.getElementById('integrantes-val');
-            const horasVal = document.getElementById('horas-val');
-            const costoHoraVal = document.getElementById('costo-hora-val');
-            const serviciosVal = document.getElementById('servicios-val');
-
+            const usuariosSlider = document.getElementById('usuarios');
+            const indirectosSlider = document.getElementById('indirectos');
+            const usuariosVal = document.getElementById('usuarios-val');
+            const indirectosVal = document.getElementById('indirectos-val');
+            
             const totalHorasDisplay = document.getElementById('total-horas');
             const costoRrhhDisplay = document.getElementById('costo-rrhh');
-            const otrosCostosDisplay = document.getElementById('otros-costos');
-            const costoTotalDisplay = document.getElementById('costo-total');
+            const costoInfraDisplay = document.getElementById('costo-infra');
+            const costoApisDisplay = document.getElementById('costo-apis');
+            const costoIndirectoDisplay = document.getElementById('costo-indirecto');
+            const costoMensualTotalDisplay = document.getElementById('costo-mensual-total');
+            const strategyDetailsDiv = document.getElementById('strategy-details');
             
             const btnOptimista = document.getElementById('btn-optimista');
             const btnBase = document.getElementById('btn-base');
             const btnPesimista = document.getElementById('btn-pesimista');
+            const strategyRadios = document.querySelectorAll('input[name="strategy"]');
 
-            // Configuración del Gráfico
+            const COSTO_HORA_DEV = 30;
+            const COSTO_GOOGLE_STT_PER_MIN = 0.024;
+            const MIN_POR_USUARIO_MES = 14.462;
+            const COSTO_BASE_GOOGLE_INFRA = 41;
+            const COSTO_NETUY_PLAN1 = 229.11;
+            const COSTO_NETUY_PLAN2 = 306.81;
+            const NUMERO_INTEGRANTES = 4; // Fijo para el cálculo de indirectos
+
+            const strategyDetailsContent = {
+                'google-cloud': { title: 'Google Cloud (Serverless - PaaS)', description: 'Ideal para fases iniciales. Baja complejidad operativa (PaaS gestionado) y costo inicial bajo (pago por uso).', pros: ['Baja complejidad', 'Arranque económico', 'Escalado automático'], cons: ['Costo de APIs alto a escala', 'Mayor latencia para Uruguay', 'Soberanía de datos global'], considerations: ['El costo se vuelve impredecible con muchos usuarios.', 'Perfecto para validación rápida.'] },
+                'netuy1-whisper': { title: 'Netuy Plan 1 + Whisper (IaaS)', description: 'Estrategia de optimización de costos a largo plazo. Elimina el costo variable de la API de voz.', pros: ['Costo mensual fijo', 'Ahorro >90% en voz a escala', 'Latencia mínima', 'Soberanía de datos nacional'], cons: ['Alta carga operativa de DevOps', 'El equipo gestiona toda la infraestructura', 'Escalado manual'], considerations: ['Requiere inversión en horas de DevOps para desplegar y mantener Whisper.', 'La viabilidad depende de la capacidad técnica.'] },
+                'netuy2-whisper': { title: 'Netuy Plan 2 + Whisper (IaaS)', description: 'Similar al Plan 1, pero con más recursos (RAM y NVMe) para mayor volumen de usuarios o modelos de IA más pesados.', pros: ['Mayor capacidad de cómputo', 'Mismas ventajas de soberanía y latencia'], cons: ['Misma alta carga DevOps', 'Costo fijo mensual más elevado'], considerations: ['Justificado para crecimiento rápido o si los servicios requieren más recursos.'] },
+                'hybrid': { title: 'Híbrido (Netuy 1 + Google API)', description: 'Enfoque balanceado que combina infraestructura local para el backend y APIs de voz de Google.', pros: ['Combina baja latencia (backend) con alta calidad de voz', 'Reduce la carga de DevOps (sin mantener Whisper)', 'Soberanía sobre datos principales'], cons: ['Mantiene un costo variable y alto por APIs de voz', 'Potencial complejidad de arquitectura'], considerations: ['Buen paso intermedio si la migración completa a Whisper es demasiado compleja inicialmente.'] }
+            };
+
             const chartCtx = document.getElementById('costChart').getContext('2d');
             const costChart = new Chart(chartCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Recursos Humanos', 'Otros Costos'],
+                    labels: ['Infraestructura', 'APIs de Voz', 'Indirectos (Equipo)'],
                     datasets: [{
-                        data: [24000, 100],
-                        backgroundColor: ['#3b82f6', '#ef4444'],
+                        data: [41, 694, 100],
+                        backgroundColor: ['#2563eb', '#ef4444', '#f59e0b'],
                         borderColor: ['#ffffff'],
                         borderWidth: 3,
                     }]
@@ -194,22 +206,12 @@
                     maintainAspectRatio: false,
                     cutout: '60%',
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: {
-                                    size: 14,
-                                    family: 'Roboto'
-                                }
-                            }
-                        },
+                        legend: { position: 'bottom', labels: { font: { size: 14, family: 'Roboto' } } },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
                                     let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
+                                    if (label) { label += ': '; }
                                     if (context.parsed !== null) {
                                         label += new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'USD' }).format(context.parsed);
                                     }
@@ -221,73 +223,89 @@
                 }
             });
 
-            // Función principal para calcular y renderizar
-            function calculateAndRender() {
-                const integrantes = parseInt(integrantesSlider.value);
-                const horas = parseInt(horasSlider.value);
-                const costoHora = parseInt(costoHoraSlider.value);
-                const servicios = parseInt(serviciosSlider.value);
-
-                const totalHoras = integrantes * horas;
-                const costoRrhh = totalHoras * costoHora;
-                const costoTotal = costoRrhh + servicios;
-
-                // Actualizar valores de los labels de los sliders
-                integrantesVal.textContent = integrantes;
-                horasVal.textContent = horas;
-                costoHoraVal.textContent = `$${costoHora}`;
-                serviciosVal.textContent = `$${servicios}`;
-
-                // Actualizar display de resultados
-                const numberFormat = new Intl.NumberFormat('es-UY');
-                const currencyFormat = new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
-                
-                totalHorasDisplay.textContent = numberFormat.format(totalHoras);
-                costoRrhhDisplay.textContent = currencyFormat.format(costoRrhh);
-                otrosCostosDisplay.textContent = currencyFormat.format(servicios);
-                costoTotalDisplay.textContent = currencyFormat.format(costoTotal);
-
-                // Actualizar gráfico
-                costChart.data.datasets[0].data = [costoRrhh, servicios];
-                costChart.update();
+            function updateStrategyDetails(strategy) {
+                const details = strategyDetailsContent[strategy];
+                if (details) {
+                    strategyDetailsDiv.innerHTML = `<h4 class="font-bold text-gray-900 mb-2">${details.title}</h4>
+                        <p class="text-sm mb-4">${details.description}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <h5 class="font-semibold text-green-700 mb-1">Ventajas</h5>
+                                <ul class="list-disc text-green-700 space-y-1">${details.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-red-700 mb-1">Desventajas</h5>
+                                <ul class="list-disc text-red-700 space-y-1">${details.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+                            </div>
+                            <div class="sm:col-span-2 mt-2">
+                                <h5 class="font-semibold text-blue-800 mb-1">Consideraciones Clave</h5>
+                                <ul class="list-disc text-blue-800 space-y-1">${details.considerations.map(c => `<li>${c}</li>`).join('')}</ul>
+                            </div>
+                        </div>`;
+                }
             }
 
-            // Función para configurar los sliders a un escenario
-            function setScenario(scenario) {
-                switch(scenario) {
-                    case 'optimista':
-                        integrantesSlider.value = 4;
-                        horasSlider.value = 180; // 720 horas / 4 integrantes
-                        costoHoraSlider.value = 30;
-                        serviciosSlider.value = 50;
+            function calculateAndRender() {
+                const usuarios = parseInt(usuariosSlider.value);
+                const costoIndirectoPerUser = parseInt(indirectosSlider.value);
+                const strategy = document.querySelector('input[name="strategy"]:checked').value;
+
+                let costoInfra = 0;
+                let costoApis = 0;
+                
+                switch(strategy) {
+                    case 'google-cloud':
+                        costoInfra = COSTO_BASE_GOOGLE_INFRA;
+                        costoApis = usuarios * MIN_POR_USUARIO_MES * COSTO_GOOGLE_STT_PER_MIN;
                         break;
-                    case 'base':
-                        integrantesSlider.value = 4;
-                        horasSlider.value = 200; // 800 horas / 4 integrantes
-                        costoHoraSlider.value = 30;
-                        serviciosSlider.value = 100;
+                    case 'netuy1-whisper':
+                        costoInfra = COSTO_NETUY_PLAN1;
+                        costoApis = 0;
                         break;
-                    case 'pesimista':
-                        integrantesSlider.value = 4;
-                        horasSlider.value = 240; // 960 horas / 4 integrantes
-                        costoHoraSlider.value = 30;
-                        serviciosSlider.value = 150;
+                    case 'netuy2-whisper':
+                        costoInfra = COSTO_NETUY_PLAN2;
+                        costoApis = 0;
+                        break;
+                    case 'hybrid':
+                        costoInfra = COSTO_NETUY_PLAN1;
+                        costoApis = usuarios * MIN_POR_USUARIO_MES * COSTO_GOOGLE_STT_PER_MIN;
                         break;
                 }
-                calculateAndRender();
+                
+                const costoMensualDirecto = costoInfra + costoApis;
+                const costoMensualIndirecto = NUMERO_INTEGRANTES * costoIndirectoPerUser;
+
+                usuariosVal.textContent = new Intl.NumberFormat('es-UY').format(usuarios);
+                indirectosVal.textContent = `$${costoIndirectoPerUser}`;
+                const currencyFormat = new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+                
+                costoInfraDisplay.textContent = currencyFormat.format(costoInfra);
+                costoApisDisplay.textContent = currencyFormat.format(costoApis);
+                costoIndirectoDisplay.textContent = currencyFormat.format(costoMensualIndirecto);
+                costoMensualTotalDisplay.textContent = currencyFormat.format(costoMensualDirecto);
+
+                costChart.data.datasets[0].data = [costoInfra, costoApis, costoMensualIndirecto];
+                costChart.update();
+                updateStrategyDetails(strategy);
             }
 
-            // Event Listeners
-            [integrantesSlider, horasSlider, costoHoraSlider, serviciosSlider].forEach(slider => {
-                slider.addEventListener('input', calculateAndRender);
-            });
+            function setScenario(scenario) {
+                let horas = 800;
+                if (scenario === 'optimista') horas = 720;
+                if (scenario === 'pesimista') horas = 960;
+                
+                const costoRrhh = horas * COSTO_HORA_DEV;
+                
+                totalHorasDisplay.textContent = new Intl.NumberFormat('es-UY').format(horas);
+                costoRrhhDisplay.textContent = new Intl.NumberFormat('es-UY', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(costoRrhh);
+            }
 
-            btnOptimista.addEventListener('click', () => setScenario('optimista'));
-            btnBase.addEventListener('click', () => setScenario('base'));
-            btnPesimista.addEventListener('click', () => setScenario('pesimista'));
+            [usuariosSlider, indirectosSlider].forEach(slider => slider.addEventListener('input', calculateAndRender));
+            strategyRadios.forEach(radio => radio.addEventListener('change', calculateAndRender));
+            [btnOptimista, btnBase, btnPesimista].forEach(btn => btn.addEventListener('click', (e) => setScenario(e.target.id.split('-')[1])));
             
-            // Carga inicial
             setScenario('base');
+            calculateAndRender();
         });
     </script>
 </body>
